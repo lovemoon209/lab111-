@@ -1,0 +1,94 @@
+#include <fstream>
+#include <gtest/gtest.h>
+
+#define main dont_use_main
+#include "lab11_1.cpp"
+#undef main
+
+TEST(FindThirdDotTest, ExactlyThreeDots) {
+  std::ofstream f("test1.txt");
+  f << "Hello.\nThis is line.\nAnd this is third.";
+  f.close();
+
+  int line = 0, pos = 0;
+  bool result = FindThirdDot("test1.txt", line, pos);
+
+  EXPECT_TRUE(result);
+  EXPECT_EQ(line, 3);
+  EXPECT_EQ(pos, 17);
+}
+
+TEST(FindThirdDotTest, DotsInOneLine) {
+  std::ofstream f("test2.txt");
+  f << "a.b.c.d";
+  f.close();
+
+  int line = 0, pos = 0;
+  bool result = FindThirdDot("test2.txt", line, pos);
+
+  EXPECT_TRUE(result);
+  EXPECT_EQ(line, 1);
+  EXPECT_EQ(pos, 5);
+}
+
+TEST(FindThirdDotTest, ManyDots) {
+  std::ofstream f("test3.txt");
+  f << "....";
+  f.close();
+
+  int line = 0, pos = 0;
+  bool result = FindThirdDot("test3.txt", line, pos);
+
+  EXPECT_TRUE(result);
+  EXPECT_EQ(line, 1);
+  EXPECT_EQ(pos, 2);
+}
+
+TEST(FindThirdDotTest, LessThanThreeDots) {
+  std::ofstream f("test4.txt");
+  f << ".x.\n";
+  f.close();
+
+  int line = 0, pos = 0;
+  bool result = FindThirdDot("test4.txt", line, pos);
+
+  EXPECT_FALSE(result);
+}
+
+TEST(FindThirdDotTest, EmptyFile) {
+  std::ofstream("empty.txt").close();
+
+  int line = 0, pos = 0;
+  bool result = FindThirdDot("empty.txt", line, pos);
+
+  EXPECT_FALSE(result);
+}
+
+int main(int argc, char **argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
+admin@MacBook-Air-admin-2 proof11 % g++ testdot.cpp -o lab11_test \
+-std=c++17 \
+-I/opt/homebrew/include -L/opt/homebrew/lib \
+-lgtest -lgtest_main -pthread
+admin@MacBook-Air-admin-2 proof11 % ./lab11_test    
+[==========] Running 5 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 5 tests from FindThirdDotTest
+[ RUN      ] FindThirdDotTest.ExactlyThreeDots
+[       OK ] FindThirdDotTest.ExactlyThreeDots (0 ms)
+[ RUN      ] FindThirdDotTest.DotsInOneLine
+[       OK ] FindThirdDotTest.DotsInOneLine (0 ms)
+[ RUN      ] FindThirdDotTest.ManyDots
+[       OK ] FindThirdDotTest.ManyDots (0 ms)
+[ RUN      ] FindThirdDotTest.LessThanThreeDots
+[       OK ] FindThirdDotTest.LessThanThreeDots (0 ms)
+[ RUN      ] FindThirdDotTest.EmptyFile
+[       OK ] FindThirdDotTest.EmptyFile (0 ms)
+[----------] 5 tests from FindThirdDotTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 5 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 5 tests.
+admin@MacBook-Air-admin-2 proof11 % 
